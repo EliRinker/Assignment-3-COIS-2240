@@ -2,7 +2,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class RentalSystem
+public class RentalSystem{
 
 //Singleton instance
 private static RentalSystem instance;
@@ -11,12 +11,27 @@ private static RentalSystem instance;
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
 
-    public void addVehicle(Vehicle vehicle) {
+    public boolean addVehicle(Vehicle vehicle) {
+    	
+    	if (findVehicleByPlate(vehicle.getLicensePlate()) != null) {
+    		System.out.println("Error: Vehicle with license plate" + vehicle.getLicensePlate() + "already exists.");
+    		return false;
+    	}
+    	
         vehicles.add(vehicle);
+        return true;
     }
 
-    public void addCustomer(Customer customer) {
+    public boolean addCustomer(Customer customer) {
+    	
+    	if (findCustomerById(String.valueOf(customer.getCustomerID())) != null) {
+    		System.out.println("Error: Customer with ID" + customer.getCustomerID() + "already exists.");
+    		return false;
+    	}
+    	
+    	
         customers.add(customer);
+        return true;
     }
     
     public static RentalSystem getInstance() {
@@ -38,16 +53,16 @@ private static RentalSystem instance;
         }
     }
 
-    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) {
+    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double returnFees) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.RENTED) {
-            vehicle.setStatus(Vehicle.VehicleStatus.AVAILABLE);
-            rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
+            vehicle.setStatus(Vehicle.VehicleStatus.AVAILABLE);  // Vehicle status changes to available
+            rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, returnFees, "RETURN"));
             System.out.println("Vehicle returned by " + customer.getCustomerName());
-        }
-        else {
+        } else {
             System.out.println("Vehicle is not rented.");
         }
-    }    
+    }
+ 
 
     public void displayVehicles(boolean onlyAvailable) {
     	System.out.println("|     Type         |\tPlate\t|\tMake\t|\tModel\t|\tYear\t|");
