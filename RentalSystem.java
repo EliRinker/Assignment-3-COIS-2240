@@ -2,7 +2,11 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class RentalSystem {
+public class RentalSystem
+
+//Singleton instance
+private static RentalSystem instance;
+
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
@@ -14,6 +18,14 @@ public class RentalSystem {
     public void addCustomer(Customer customer) {
         customers.add(customer);
     }
+    
+    public static RentalSystem getInstance() {
+        if (instance == null) {
+            instance = new RentalSystem();
+        }
+        return instance;
+    }
+
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.AVAILABLE) {
